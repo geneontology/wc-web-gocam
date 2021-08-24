@@ -29,7 +29,8 @@ export class CamTable {
   filterByKeyword(newValue, oldValue) {
     const isNotString = typeof newValue !== 'string';
     if (isNotString) { throw new Error('keyword: not string') };
-    if (newValue != oldValue) {
+    if (newValue !== oldValue) {
+      this.applyFilter(newValue)
     }
   }
 

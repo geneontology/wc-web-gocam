@@ -9,6 +9,18 @@
   <script nomodule src="/build/wc-gocam-table.js"></script>
 </head>
 <body>
-  <wc-gocam-table keyword="maltos"></wc-gocam-table>
+
+  <input type="text" placeholder="Filter" id="goc-filter-input">
+
+  <wc-gocam-table id="goc-gocam-table" keyword="maltos"></wc-gocam-table>
+  <script>
+    var filterInput = document.getElementById("goc-filter-input");
+    filterInput.addEventListener('input', updateFilter);
+
+    function updateFilter(e) {
+      var goCamTable = document.getElementById("goc-gocam-table");
+      goCamTable.setAttribute('keyword', e.target.value);
+    }
+  </script>
 </body>
 </html>
