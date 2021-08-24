@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface WcGocamTable {
+        "keyword": any;
     }
 }
 declare global {
@@ -22,6 +23,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface WcGocamTable {
+        "keyword"?: any;
     }
     interface IntrinsicElements {
         "wc-gocam-table": WcGocamTable;

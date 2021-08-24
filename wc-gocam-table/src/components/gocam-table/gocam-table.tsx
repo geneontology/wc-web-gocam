@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, h, Prop, State, Watch } from '@stencil/core';
 import { GOCam } from '../../utils/models/gocam';
 import { GOCamTableModel, GOTableDataSource, TableColumn } from '../../utils/models/gocam-table';
 import { CurieUtilService } from '../../utils/services/curie-util.service';
@@ -20,17 +20,23 @@ export class CamTable {
 
   isLoading: boolean = true;
   isBufferLoading: boolean = true;
-  date = new Date();
-  showDevModels: boolean = false;
-  showReviewModels: boolean = false;
   pageSizes = [10, 25, 100];
+
+  @Prop()
+  keyword
+
+  @Watch('keyword')
+  filterByKeyword(newValue, oldValue) {
+    const isNotString = typeof newValue !== 'string';
+    if (isNotString) { throw new Error('keyword: not string') };
+    if (newValue != oldValue) {
+    }
+  }
 
   @State()
   dataSource: GOTableDataSource<GOCamTableModel>;
 
   models = [];
-
-  searchFilter: string = undefined;
 
 
   componentWillLoad() {
@@ -127,8 +133,29 @@ export class CamTable {
         this.cache.setDetailedModels(this.models);
       } */
       this.createSearchField();
-      this.updateTable(gocams != null);
+      this.initializeTable(gocams != null);
     });
+  }
+
+  initializeTable(isBufferLoading: boolean) {
+    this.dataSource = new GOTableDataSource<GOCamTableModel>(this.models);
+    this.dataSource.columns = constants.tableColumns;
+    this.setFilterPredicates();
+    this.applyFilter(this.keyword);
+    this.isLoading = false;
+    this.isBufferLoading = isBufferLoading;
+
+  }
+
+  applyFilter(filterValue: string) {
+    if (!filterValue) {
+      this.dataSource.filter = undefined;
+      this.dataSource.filterData()
+      return;
+    }
+    filterValue = filterValue.trim().toLowerCase();
+    this.dataSource.filter = filterValue;
+    this.dataSource.filterData()
   }
 
   /** 
@@ -197,20 +224,7 @@ export class CamTable {
 
   }
 
-  /**
-   * Update the Data Table
-   * @param isBufferLoading is true, the UI should display that some buffers are still loading
-   */
-  updateTable(isBufferLoading: boolean) {
-    this.dataSource = new GOTableDataSource<GOCamTableModel>(this.models);
-    this.dataSource.columns = constants.tableColumns;
-    this.dataSource.getPage(1, 50)
-    this.setFilterPredicates();
 
-    this.isLoading = false;
-    this.isBufferLoading = isBufferLoading;
-    this.applyFilter(this.searchFilter);
-  }
 
   /** 
   * Change how the filter is applied
@@ -243,16 +257,7 @@ export class CamTable {
       }
   }
 
-  applyFilter(filterValue: string) {
-    if (!filterValue) {
-      this.dataSource.filter = undefined;
-      return;
-    }
 
-    filterValue = filterValue.trim();
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
-  }
 
 
 
@@ -390,69 +395,11 @@ export class CamTable {
       })
   }
 
-  getSpeciesIcon(species: string) {
-    //    console.log(species);
-
-    switch (species) {
-      case "Drer":
-        return "";
-      case "Cele":
-        return "";
-    }
-    return "";
-  }
-
-
   changeSelection(event) {
     console.log("change: ", event.value);
     //this.displayedColumns = event.value;
   }
 
-
-
-  findSimilar(queryModel, max: number = 10) {
-    console.log("ask to search for models similar to ", queryModel);
-
-    let results = [];
-    let scoreA, scoreB, score;
-    this.models.forEach(model => {
-      scoreA = utils.scoreModel(queryModel, model);
-      scoreB = utils.scoreModel(model, queryModel);
-      score = (scoreA + scoreB) / 2.0;
-      // score = this.scoreModel(model, queryModel);
-
-      if (score >= 0.5) {
-        if (results.length < max) {
-          results.push({ "score": score, "gocam": model.gocam });
-        } else {
-          for (let i = 0; i < results.length; i++) {
-            if (results[i].score < score) {
-              results[i] = { "score": score, "gocam": model.gocam };
-              break;
-            }
-          }
-        }
-      }
-    });
-
-    console.log("RESULTS:");
-    let list = "";
-    results.forEach(elt => {
-      console.log(elt);
-      list += elt.gocam.substring(elt.gocam.lastIndexOf("/") + 1) + " OR ";
-    })
-
-    if (list.length > 0) {
-      list = list.substring(0, list.length - 3).trim();
-    }
-    this.searchFilter = list;
-
-    this.applyFilter(list);
-
-    window.scrollTo(0, 0);
-
-    return results;
-  }
 
 
   coloredLine = ({ color }) => (
@@ -497,7 +444,7 @@ export class CamTable {
 
   renderRows(rows) {
     return (
-      rows.map(row => {
+      rows?.map(row => {
         return [
           <tr>
             {this.renderTitleCell(row)}

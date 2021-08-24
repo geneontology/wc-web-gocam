@@ -48,14 +48,26 @@ export class GOTableDataSource<T> {
   filterPredicate: (data: any, filters: string) => boolean;
 
   constructor(data: T[]) {
-    this.data = data;;
+    this.data = data;
   }
 
   getPage(page: number, pageSize: number) {
     const start = page * pageSize;
     const end = page * pageSize + pageSize;
-    this.pageData = this.data.slice(start, end);
+    this.pageData = this.filteredData.slice(start, end);
 
     return this.pageData
+  }
+
+  filterData() {
+    if (this.filter === null || this.filter === '') {
+      this.filteredData = this.data;
+    } else {
+      this.filteredData = this.data.filter(obj => this.filterPredicate(obj, this.filter));
+    }
+
+    this.getPage(0, 50)
+
+    return this.filteredData;
   }
 }
