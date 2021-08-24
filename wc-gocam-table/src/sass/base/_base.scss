@@ -1,0 +1,21 @@
+/* because browser may have different default values */
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box; 
+
+    font-family: "Lato", sans-serif;
+    // this line has caused me many problems
+    // font-size: $font-size-default;
+    font-weight: 400;
+    line-height: $default-line-height;
+
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: $background-color;
+    height: auto;
+}

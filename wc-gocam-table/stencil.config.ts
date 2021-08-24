@@ -1,7 +1,8 @@
 import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
 
 export const config: Config = {
-  namespace: 'wc-web-gocam',
+  namespace: 'wc-gocam-table',
   outputTargets: [
     {
       type: 'dist',
@@ -18,4 +19,5 @@ export const config: Config = {
       serviceWorker: null, // disable service workers
     },
   ],
+  plugins: [sass()],
 };

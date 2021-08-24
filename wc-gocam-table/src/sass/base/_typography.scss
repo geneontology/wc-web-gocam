@@ -1,0 +1,74 @@
+.heading-primary {
+    font-size: $font-size-primary;
+    color: $color-primary;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.heading-secondary {
+    font-size: $font-size-secondary;
+    color: $color-primary;
+    font-weight: 700;
+    margin-bottom: $value-xxsmall;
+}
+
+.heading-tertiary {
+    font-size: $font-size-tertiary;
+    color: $color-primary;
+}
+
+
+
+
+a {
+    font-size: $font-size-default;    
+    display: inline-block;
+    transition: all 0.5s;
+    text-decoration: none;
+    color: $color-primary;
+}
+
+a:hover {
+    font-weight: 700;
+}
+
+
+.link-underline-animated {
+    color: $color-primary;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.link-underline-animated:after {    
+    background: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 1px;
+    left: 50%;
+    position: absolute;
+    background: $color-primary;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+}
+
+.link-underline-animated:hover:after { 
+    width: 100%; 
+    left: 0; 
+}
+  
+
+
+li {
+    list-style-type: square;
+    margin-left: 1.5rem;
+}
+
+li:not(:last-child) {
+    margin-bottom: calc(5px + .6vw);
+}
+
+p {
+    margin-bottom: $value-xxsmall;
+}
