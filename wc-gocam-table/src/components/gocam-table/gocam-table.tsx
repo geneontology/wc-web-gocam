@@ -41,11 +41,6 @@ export class CamTable {
 
 
   componentWillLoad() {
-    // notes: 
-    // - this is a first pass, loading only the models of the first page for fast rendering
-    // - at this stage, no info is put in searchfield,
-
-    console.log('init')
     this.curieService.setupCurie();
     //const initialSize = this.pageSizes[0];
     this.goApiService.getModelList().then((goCams: GOCam[]) => {
@@ -222,10 +217,7 @@ export class CamTable {
 
       tabelt.searchfield = tabelt.searchfield.toLowerCase();
     })
-
   }
-
-
 
   /** 
   * Change how the filter is applied
