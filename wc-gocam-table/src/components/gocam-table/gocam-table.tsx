@@ -13,14 +13,14 @@ import * as utils from './../../utils/utils';
   shadow: false,
 })
 export class CamTable {
-  pubmedApiService  = new PubmedApiService();
+  pubmedApiService = new PubmedApiService();
   curieService = new CurieUtilService();
   goApiService = new GoApiService();
 
 
   isLoading: boolean = true;
   isBufferLoading: boolean = true;
-  date = new Date(); 
+  date = new Date();
   showDevModels: boolean = false;
   showReviewModels: boolean = false;
   pageSizes = [10, 25, 100];
@@ -36,7 +36,7 @@ export class CamTable {
 
   searchFilter: string = undefined;
 
- 
+
   componentWillLoad() {
     // notes: 
     // - this is a first pass, loading only the models of the first page for fast rendering
@@ -45,7 +45,7 @@ export class CamTable {
     console.log('init')
     this.curieService.setupCurie();
     //const initialSize = this.pageSizes[0];
-    this.goApiService.getModelList().then((goCams:GOCam[] )=> {
+    this.goApiService.getModelList().then((goCams: GOCam[]) => {
       goCams.map(res => {
         this.models.push(res);
       })
@@ -62,7 +62,7 @@ export class CamTable {
    * @param callback callback function to launch when this task is done. Can be null
    */
   fillWithGOs(gocams?) {
-    if(gocams != null) {
+    if (gocams != null) {
       return;
     }
     this.goApiService.getAllModelsGOs().then(json => {
@@ -74,13 +74,13 @@ export class CamTable {
           tabelt.mf = this.extractGOs(element, constants.MOLECULAR_FUNCTION);
           tabelt.cc = this.extractGOs(element, constants.CELLULAR_COMPONENT);
         } else {
-         // console.warn("gocam <" + element.gocam + "> does not seem to have GO-Terms");
+          // console.warn("gocam <" + element.gocam + "> does not seem to have GO-Terms");
         }
       });
       //      console.log("fillWithGOs(" + gocams + "): done");
       this.fillWithGPs(gocams);
-  });
-}
+    });
+  }
 
   /**
    * Fill the Table with Gene Products meta data
@@ -88,7 +88,7 @@ export class CamTable {
    * @param callback callback function to launch when this task is done. Can be null
    */
   fillWithGPs(gocams) {
-    if(gocams != null) {
+    if (gocams != null) {
       return;
     }
 
@@ -100,7 +100,7 @@ export class CamTable {
         if (tabelt) {
           tabelt.gp = this.extractGPs(element);
         } else {
-         // console.warn("gocam <" + element.gocam + "> does not seem to have Gene Products");
+          // console.warn("gocam <" + element.gocam + "> does not seem to have Gene Products");
         }
       });
       this.fillWithPMIDs(gocams);
@@ -113,8 +113,8 @@ export class CamTable {
    * @param callback callback function to launch when this task is done. Can be null
    */
   fillWithPMIDs(gocams) {
-    if(gocams != null) {
-      return null;      
+    if (gocams != null) {
+      return null;
     }
 
     this.gpSub = this.goApiService.getAllModelsPMIDs().then(json => {
@@ -124,7 +124,7 @@ export class CamTable {
         if (tabelt) {
           tabelt.pmid = this.extractPMIDs(element);
         } else {
-         // console.warn("gocam <" + element.gocam + "> does not seem to have PMIDs");
+          // console.warn("gocam <" + element.gocam + "> does not seem to have PMIDs");
         }
       });/* 
       if (gocams == null) {
@@ -253,7 +253,7 @@ export class CamTable {
       return;
     }
 
-    filterValue = filterValue.trim(); 
+    filterValue = filterValue.trim();
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
@@ -361,9 +361,9 @@ export class CamTable {
     return results;
   }
 
-/*   getModels(event: Page) {
-    return this.models.slice(event.pageIndex * event.pageSize, (event.pageIndex + 1) * event.pageSize);
-  } */
+  /*   getModels(event: Page) {
+      return this.models.slice(event.pageIndex * event.pageSize, (event.pageIndex + 1) * event.pageSize);
+    } */
 
 
   bpToolTip(bp) {
@@ -384,9 +384,9 @@ export class CamTable {
 
   articleTooltip = "Please wait...";
   alreadyFetching = false;
-  
+
   overpmid(pmid) {
-    if(this.alreadyFetching)
+    if (this.alreadyFetching)
       return;
 
     this.alreadyFetching = true;
@@ -477,33 +477,33 @@ export class CamTable {
     return results;
   }
 
- 
 
 
 
-  
+
+
   render() {
-    if(!this.dataSource) {
+    if (!this.dataSource) {
       return "";
     }
 
     return (
       <div>
         <table class="table">
-            { this.renderHeader(this.dataSource.columns) }
-            { this.renderRows(this.dataSource.pageData) }
+          {this.renderHeader(this.dataSource.columns)}
+          {this.renderRows(this.dataSource.pageData)}
         </table>
       </div>
     );
   }
 
-  renderHeader(columns:TableColumn[]) {
+  renderHeader(columns: TableColumn[]) {
     return <tr class="table__header">
       {
-        columns.map( column => {
+        columns.map(column => {
           return [
-            column.hidden ? 
-              ""  : <th class="table__header__cell">{column.label}</th>
+            column.hidden ?
+              "" : <th class="table__header__cell">{column.label}</th>
           ]
         })
       }
@@ -511,27 +511,40 @@ export class CamTable {
   }
 
   renderRows(rows) {
-    return ( 
-      rows.map( row => {
-      return [
-      <tr> 
-        {this.renderTermCell(row, 'mf')}
-        {this.renderTermCell(row, 'bp')}
-        {this.renderTermCell(row, 'cc')}
-         {this.renderDateCell(row)}
-      </tr>]
+    return (
+      rows.map(row => {
+        return [
+          <tr>
+            {this.renderTermCell(row, constants.TermCategory.BP)}
+            {this.renderTermCell(row, constants.TermCategory.MF)}
+            {this.renderTermCell(row, constants.TermCategory.CC)}
+            {this.renderTermCell(row, constants.TermCategory.GP)}
+            {this.renderGroupCell(row)}
+            {this.renderContributorCell(row)}
+            {this.renderDateCell(row)}
+          </tr>]
       })
-    )    
+    )
+  }
+
+  renderTitleCell(row) {
+    return (
+      <td class="mat-column-date">
+        <div class="date-design">
+          <span class="date-design__year">{row.date}</span>
+        </div>
+      </td>
+    )
   }
 
   renderDateCell(row) {
     return (
       <td class="mat-column-date">
         <div class="date-design">
-        <span class="date-design__year">{ row.date }</span>
+          <span class="date-design__year">{row.date}</span>
         </div>
       </td>
-      )
+    )
   }
 
   renderTermCell(row, termType) {
@@ -539,24 +552,58 @@ export class CamTable {
       return <td class="cell-block"></td>
     }
 
-    const cellClass=`table-button color-${termType}`
+    const cellClass = `table-button color-${termType}`
 
     return (
       <td class="cell-block">
         <div class="u-width-full">
-          <span>{            
+          <span>{
             row[termType].map(term => {
-              return [  
-              <a target="_blank" class={cellClass}>
-                  { term.name }
-               </a>
+              return [
+                <a target="_blank" class={cellClass}>
+                  {term.name}
+                </a>
               ]
             })
           }
+          </span>
+        </div>
+      </td>
+    )
+  }
+
+  renderGroupCell(row) {
+    return (
+      <td class="mat-column-align-right mat-column-group">
+        <span>{
+          row.groupnames.map(name => {
+            return [
+              <a target="_blank" class="a-vertical-displacement a-font-weight">
+                {name}
+              </a>
+            ]
+          })
+        }
         </span>
-      </div>
-    </td>
-      )
+      </td>
+    )
+  }
+
+  renderContributorCell(row) {
+    return (
+      <td class="mat-column-align-right mat-column-group">
+        <span>{
+          row.names.map(name => {
+            return [
+              <a target="_blank" class="a-vertical-displacement a-font-weight">
+                {name}
+              </a>
+            ]
+          })
+        }
+        </span>
+      </td>
+    )
   }
 
 }

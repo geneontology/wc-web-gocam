@@ -29,3 +29,10 @@ export const tableColumns = [
   { label: 'Contributor', hidden: false },
   { label: 'Group', hidden: false },
   { label: 'Date', hidden: false }];
+
+export enum TermCategory {
+  GP = 'gp',
+  MF = 'mf',
+  BP = 'bp',
+  CC = 'cc'
+}
