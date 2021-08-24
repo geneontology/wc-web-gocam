@@ -30,10 +30,6 @@ export class CamTable {
 
   models = [];
 
-  gorestSub: any;
-  gotermsSub: any;
-  gpSub: any;
-
   searchFilter: string = undefined;
 
 
@@ -93,7 +89,7 @@ export class CamTable {
     }
 
     //    console.log("fillWithGPs(" + gocams + "): start");
-    this.gpSub = this.goApiService.getAllModelsGPs().then(json => {
+    this.goApiService.getAllModelsGPs().then(json => {
       var tabelt;
       json.forEach(element => {
         tabelt = this.models.find(item => { return item.gocam == element.gocam });
@@ -117,7 +113,7 @@ export class CamTable {
       return null;
     }
 
-    this.gpSub = this.goApiService.getAllModelsPMIDs().then(json => {
+    this.goApiService.getAllModelsPMIDs().then(json => {
       var tabelt;
       json.forEach(element => {
         tabelt = this.models.find(item => { return item.gocam == element.gocam });
@@ -308,32 +304,13 @@ export class CamTable {
     return pmids.sort(this.compare);
   }
 
-
   simplifyNames(names: string[]) {
     var snames = [];
     for (var i = 0; i < names.length; i++) {
-      snames[i] = this.simplifyName(names[i]);
+      snames[i] = utils.simplifyName(names[i]);
     }
     return snames;
   }
-
-  // Format the name of the user
-  simplifyName(name: string) {
-    if (name.indexOf(" ") == -1)
-      return name;
-    // simple regex to divide name based on space or dash (differentiate last name dash and first name dash)
-    var split = name.split(/\s|-(?=[a-zA-Zéèàïü]+\s)/);
-    if (split.length == 1) {
-      return name;
-    }
-
-    var firstNames = "";
-    for (var i = 0; i < split.length - 1; i++) {
-      firstNames += split[i].substring(0, 1) + ".";
-    }
-    return firstNames + split[split.length - 1];
-  }
-
 
   extractModels(models) {
     return models.map(elt => this.extractModel(elt));
@@ -478,7 +455,15 @@ export class CamTable {
   }
 
 
-
+  coloredLine = ({ color }) => (
+    <hr
+      style={{
+        color: color,
+        backgroundColor: color,
+        height: '5px'
+      }}
+    />
+  );
 
 
 
@@ -515,6 +500,7 @@ export class CamTable {
       rows.map(row => {
         return [
           <tr>
+            {this.renderTitleCell(row)}
             {this.renderTermCell(row, constants.TermCategory.BP)}
             {this.renderTermCell(row, constants.TermCategory.MF)}
             {this.renderTermCell(row, constants.TermCategory.CC)}
@@ -529,20 +515,47 @@ export class CamTable {
 
   renderTitleCell(row) {
     return (
-      <td class="mat-column-date">
-        <div class="date-design">
-          <span class="date-design__year">{row.date}</span>
-        </div>
-      </td>
+      <td class="cell-block goc-column-title">
+        <div class="row__title">
+          <div class="row__title__content">
+            <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank" class="row__title__link">{row.title} &nbsp;
+              <coloredLine color="red" />
+            </a>
+            <div class="row__articles__container">
+              <div class="row__articles__container__citation">Citations:</div>
+              <span class="row__article"> {
+                row.pmid?.map(pmid => {
+                  return [
+                    <a href="{{ urlHandler.getPubMedAbstract(pmid) }}" target="_blank">
+                      b
+                    </a>
+                  ]
+                })
+              }
+              </span>
+            </div>
+            <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank"  >
+              <span class="row__view-edit">
+                Edit
+              </span>
+            </a>
+          </div>
+          <div class="row__title__actions">
+            <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank">
+              <button goc-button class="button-open">
+                <span>View</span>
+              </button>
+            </a>
+          </div >
+        </div >
+      </td >
     )
   }
 
   renderDateCell(row) {
     return (
-      <td class="mat-column-date">
-        <div class="date-design">
-          <span class="date-design__year">{row.date}</span>
-        </div>
+      <td class="cell-block">
+        <span class="">{row.date}</span>
       </td>
     )
   }
@@ -561,7 +574,8 @@ export class CamTable {
             row[termType].map(term => {
               return [
                 <a target="_blank" class={cellClass}>
-                  {term.name}
+                  {termType === constants.TermCategory.GP ?
+                    term.fullName : term.name}
                 </a>
               ]
             })
@@ -574,7 +588,7 @@ export class CamTable {
 
   renderGroupCell(row) {
     return (
-      <td class="mat-column-align-right mat-column-group">
+      <td class="goc-column-align-right goc-column-group">
         <span>{
           row.groupnames.map(name => {
             return [
@@ -591,7 +605,7 @@ export class CamTable {
 
   renderContributorCell(row) {
     return (
-      <td class="mat-column-align-right mat-column-group">
+      <td class="goc-column-align-right goc-column-group">
         <span>{
           row.names.map(name => {
             return [

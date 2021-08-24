@@ -140,6 +140,23 @@ export function customStringify(row) {
   return str;
 }
 
+// Format the name of the user
+export function simplifyName(name: string) {
+  if (name.indexOf(" ") == -1)
+    return name;
+  // simple regex to divide name based on space or dash (differentiate last name dash and first name dash)
+  var split = name.split(/\s|-(?=[a-zA-Zéèàïü]+\s)/);
+  if (split.length == 1) {
+    return name;
+  }
+
+  var firstNames = "";
+  for (var i = 0; i < split.length - 1; i++) {
+    firstNames += split[i].substring(0, 1) + ".";
+  }
+  return firstNames + split[split.length - 1];
+}
+
 export function clipboard(row) {
   console.log("clipboard: ", row);
 
