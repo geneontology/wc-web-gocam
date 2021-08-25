@@ -1,6 +1,6 @@
-import { Component, h, Prop, State, Watch } from '@stencil/core';
+import { Component, h, Listen, Prop, State, Watch } from '@stencil/core';
 import { GOCam } from '../../utils/models/gocam';
-import { GOCamTableModel, GOTableDataSource, TableColumn } from '../../utils/models/gocam-table';
+import { GOCamTableModel, GOTableDataSource, Page, TableColumn } from '../../utils/models/gocam-table';
 import { CurieUtilService } from '../../utils/services/curie-util.service';
 import { GoApiService } from '../../utils/services/go-api.service';
 import { PubmedApiService } from '../../utils/services/pubmed-api.service';
@@ -17,13 +17,15 @@ export class CamTable {
   curieService = new CurieUtilService();
   goApiService = new GoApiService();
 
-
   isLoading: boolean = true;
   isBufferLoading: boolean = true;
   pageSizes = [10, 25, 100];
 
   @Prop()
   keyword
+
+  @Prop()
+  paginationClass: string
 
   @Watch('keyword')
   filterByKeyword(newValue, oldValue) {
@@ -36,6 +38,27 @@ export class CamTable {
 
   @State()
   dataSource: GOTableDataSource<GOCamTableModel>;
+
+  @State()
+  pageNumber: number;
+
+  @State()
+  pageSize: number;
+
+  @Listen('pageChanged', { target: 'document' })
+  handleSelected(event: CustomEvent) {
+    this.pageNumber = event.detail;
+    this.dataSource.getPage(this.pageNumber)
+    this.updatePaginator(this.dataSource.page)
+  }
+
+  @Listen('sizeChanged')
+  handleSizeChanged(event: CustomEvent) {
+    this.pageSize = event.detail;
+    this.dataSource.changeSize(this.pageSize)
+    this.dataSource.getPage(this.pageNumber)
+    this.updatePaginator(this.dataSource.page)
+  }
 
   models = [];
 
@@ -133,14 +156,27 @@ export class CamTable {
     });
   }
 
+  updatePaginator(page: Page) {
+    if (!this.paginationClass) return;
+    const paginators = document.querySelectorAll<HTMLElement>(`.${this.paginationClass}`);
+
+    paginators.forEach(paginator => {
+      paginator.setAttribute('page-number', page.pageNumber.toString())
+      paginator.setAttribute('page-size', page.size.toString())
+      paginator.setAttribute('item-count', page.total.toString())
+    });
+
+  }
+
   initializeTable(isBufferLoading: boolean) {
+    // this.page.size = 
     this.dataSource = new GOTableDataSource<GOCamTableModel>(this.models);
     this.dataSource.columns = constants.tableColumns;
     this.setFilterPredicates();
     this.applyFilter(this.keyword);
+    this.updatePaginator(this.dataSource.page)
     this.isLoading = false;
     this.isBufferLoading = isBufferLoading;
-
   }
 
   applyFilter(filterValue: string) {
@@ -249,10 +285,6 @@ export class CamTable {
         }
       }
   }
-
-
-
-
 
   extractGOs(gocam, RootTerm) {
     var gos = [];
@@ -405,8 +437,6 @@ export class CamTable {
     />
   );
 
-
-
   render() {
     if (!this.dataSource) {
       return "";
@@ -445,8 +475,8 @@ export class CamTable {
             {this.renderTermCell(row, constants.TermCategory.MF)}
             {this.renderTermCell(row, constants.TermCategory.CC)}
             {this.renderTermCell(row, constants.TermCategory.GP)}
-            {this.renderGroupCell(row)}
             {this.renderContributorCell(row)}
+            {this.renderGroupCell(row)}
             {this.renderDateCell(row)}
           </tr>]
       })
@@ -455,7 +485,7 @@ export class CamTable {
 
   renderTitleCell(row) {
     return (
-      <td class="cell-block goc-column-title">
+      <td class="goc-cell goc-column-title">
         <div class="row__title">
           <div class="row__title__content">
             <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank" class="row__title__link">{row.title} &nbsp;
@@ -467,7 +497,7 @@ export class CamTable {
                 row.pmid?.map(pmid => {
                   return [
                     <a href="{{ urlHandler.getPubMedAbstract(pmid) }}" target="_blank">
-                      b
+                      e
                     </a>
                   ]
                 })
@@ -492,23 +522,15 @@ export class CamTable {
     )
   }
 
-  renderDateCell(row) {
-    return (
-      <td class="cell-block">
-        <span class="">{row.date}</span>
-      </td>
-    )
-  }
-
   renderTermCell(row, termType) {
     if (!row[termType]) {
-      return <td class="cell-block"></td>
+      return <td class="goc-cell"></td>
     }
 
     const cellClass = `table-button color-${termType}`
 
     return (
-      <td class="cell-block">
+      <td class="goc-cell goc-column-term">
         <div class="u-width-full">
           <span>{
             row[termType].map(term => {
@@ -528,7 +550,7 @@ export class CamTable {
 
   renderGroupCell(row) {
     return (
-      <td class="goc-column-align-right goc-column-group">
+      <td class="goc-cell goc-column-contributor">
         <span>{
           row.groupnames.map(name => {
             return [
@@ -545,7 +567,7 @@ export class CamTable {
 
   renderContributorCell(row) {
     return (
-      <td class="goc-column-align-right goc-column-group">
+      <td class="goc-cell goc-column-group">
         <span>{
           row.names.map(name => {
             return [
@@ -556,6 +578,14 @@ export class CamTable {
           })
         }
         </span>
+      </td>
+    )
+  }
+
+  renderDateCell(row) {
+    return (
+      <td class="goc-cell  goc-column-date">
+        <span class="">{row.date}</span>
       </td>
     )
   }

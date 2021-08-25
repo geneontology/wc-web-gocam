@@ -24,9 +24,13 @@ export interface GOCamTableModel {
 }
 
 export class Page {
-  size = 0;
+  size = 10;
   total = 0;
   pageNumber = 0;
+
+  constructor() {
+
+  }
 }
 
 export interface TableColumn {
@@ -51,12 +55,18 @@ export class GOTableDataSource<T> {
     this.data = data;
   }
 
-  getPage(page: number, pageSize: number) {
-    const start = page * pageSize;
-    const end = page * pageSize + pageSize;
+  getPage(pageNumber: number) {
+    this.page.pageNumber = pageNumber
+    const start = pageNumber * this.page.size;
+    const end = pageNumber * this.page.size + this.page.size;
     this.pageData = this.filteredData.slice(start, end);
 
     return this.pageData
+  }
+
+  changeSize(pageSize: number) {
+    this.page.size = pageSize;
+    this.page.pageNumber = 0;
   }
 
   filterData() {
@@ -66,7 +76,9 @@ export class GOTableDataSource<T> {
       this.filteredData = this.data.filter(obj => this.filterPredicate(obj, this.filter));
     }
 
-    this.getPage(0, 50)
+    this.page.total = this.filteredData.length;
+
+    this.getPage(0)
 
     return this.filteredData;
   }
