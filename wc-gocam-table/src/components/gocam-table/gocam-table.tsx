@@ -174,7 +174,6 @@ export class CamTable {
     this.dataSource.columns = constants.tableColumns;
     this.setFilterPredicates();
     this.applyFilter(this.keyword);
-    this.updatePaginator(this.dataSource.page)
     this.isLoading = false;
     this.isBufferLoading = isBufferLoading;
   }
@@ -183,11 +182,13 @@ export class CamTable {
     if (!filterValue) {
       this.dataSource.filter = undefined;
       this.dataSource.filterData()
+      this.updatePaginator(this.dataSource.page)
       return;
     }
     filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = filterValue;
     this.dataSource.filterData()
+    this.updatePaginator(this.dataSource.page)
   }
 
   /** 

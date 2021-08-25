@@ -10,8 +10,8 @@ export namespace Components {
         "itemCount": number;
         "pageNumber": number;
         "pageSize": number;
+        "pageTitle": string;
         "sizeOptions": number[];
-        "title": string;
     }
     interface WcGocamTable {
         "keyword": any;
@@ -43,8 +43,8 @@ declare namespace LocalJSX {
         "onSizeChanged"?: (event: CustomEvent<any>) => void;
         "pageNumber"?: number;
         "pageSize"?: number;
+        "pageTitle"?: string;
         "sizeOptions"?: number[];
-        "title"?: string;
     }
     interface WcGocamTable {
         "keyword"?: any;
