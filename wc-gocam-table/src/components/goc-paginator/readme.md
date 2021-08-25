@@ -1,17 +1,19 @@
 # wc-goc-paginator
 
-Multi purpose pagination tool
+
+
+<!-- Auto Generated Below -->
 
 
 ## Properties
 
-| Property      | Attribute      | Description | Type       | Default          |
-| ------------- | -------------- | ----------- | ---------- | ---------------- |
-| `itemCount`   | `item-count`   |             | `number`   | '0'              |
-| `page`        | `page`         |             | `number`   | `0`              |
-| `pageSize`    | `page-size`    |             | `number`   | `10`             |
-| `sizeOptions` | `size-options` |             | `number[]` | `[10, 20, 50]`   |
-| `title`       | `title`        |             | `string`   | `Items per page` |
+| Property      | Attribute     | Description | Type       | Default            |
+| ------------- | ------------- | ----------- | ---------- | ------------------ |
+| `itemCount`   | `item-count`  |             | `number`   | `undefined`        |
+| `pageNumber`  | `page-number` |             | `number`   | `1`                |
+| `pageSize`    | `page-size`   |             | `number`   | `10`               |
+| `pageTitle`   | `page-title`  |             | `string`   | `'Items per page'` |
+| `sizeOptions` | --            |             | `number[]` | `[10, 20, 50]`     |
 
 
 ## Events

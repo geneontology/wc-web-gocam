@@ -1,7 +1,8 @@
 {
   "name": "@geneontology/wc-gocam-table",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "GOCam Table Component ",
+  "private": false,
   "main": "dist/index.cjs.js",
   "module": "dist/custom-elements/index.js",
   "es2015": "dist/esm/index.mjs",
@@ -23,8 +24,7 @@
   },
   "dependencies": {
     "@geneontology/curie-util-es5": "^1.2.4",
-    "@stencil/core": "2.7.0",
-    "wc-goc-paginator": "file:../wc-goc-paginator/wc-goc-paginator-0.0.1.tgz"
+    "@stencil/core": "2.7.0"
   },
   "devDependencies": {
     "@stencil/sass": "^1.4.1",

@@ -2,14 +2,15 @@
 
 
 
+<!-- Auto Generated Below -->
 
 
 ## Properties
 
-| Property         | Attribute         | Description             | Type     | Default     |
-| ---------------- | ----------------- | ----------------------- | -------- | ----------- |
-| `keyword`        | `keyword`         | Filter keyword          | `string` | `undefined` |
-| `paginatorClass` | `paginator-class` | Where you paginator are | `string` | `undefined` |
+| Property          | Attribute          | Description | Type     | Default     |
+| ----------------- | ------------------ | ----------- | -------- | ----------- |
+| `keyword`         | `keyword`          |             | `any`    | `undefined` |
+| `paginationClass` | `pagination-class` |             | `string` | `undefined` |
 
 
 ----------------------------------------------

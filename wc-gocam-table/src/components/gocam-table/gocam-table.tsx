@@ -496,6 +496,7 @@ export class CamTable {
               <div class="row__articles__container__citation">Citations:</div>
               <span class="row__article"> {
                 row.pmid?.map(pmid => {
+                  pmid
                   return [
                     <a href="{{ urlHandler.getPubMedAbstract(pmid) }}" target="_blank">
                       e
