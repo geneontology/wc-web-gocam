@@ -6,25 +6,12 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface WcGocPaginator {
-        "itemCount": number;
-        "pageNumber": number;
-        "pageSize": number;
-        "pageTitle": string;
-        "sizeOptions": number[];
-    }
     interface WcGocamTable {
         "keyword": any;
         "paginationClass": string;
     }
 }
 declare global {
-    interface HTMLWcGocPaginatorElement extends Components.WcGocPaginator, HTMLStencilElement {
-    }
-    var HTMLWcGocPaginatorElement: {
-        prototype: HTMLWcGocPaginatorElement;
-        new (): HTMLWcGocPaginatorElement;
-    };
     interface HTMLWcGocamTableElement extends Components.WcGocamTable, HTMLStencilElement {
     }
     var HTMLWcGocamTableElement: {
@@ -32,26 +19,15 @@ declare global {
         new (): HTMLWcGocamTableElement;
     };
     interface HTMLElementTagNameMap {
-        "wc-goc-paginator": HTMLWcGocPaginatorElement;
         "wc-gocam-table": HTMLWcGocamTableElement;
     }
 }
 declare namespace LocalJSX {
-    interface WcGocPaginator {
-        "itemCount"?: number;
-        "onPageChanged"?: (event: CustomEvent<any>) => void;
-        "onSizeChanged"?: (event: CustomEvent<any>) => void;
-        "pageNumber"?: number;
-        "pageSize"?: number;
-        "pageTitle"?: string;
-        "sizeOptions"?: number[];
-    }
     interface WcGocamTable {
         "keyword"?: any;
         "paginationClass"?: string;
     }
     interface IntrinsicElements {
-        "wc-goc-paginator": WcGocPaginator;
         "wc-gocam-table": WcGocamTable;
     }
 }
@@ -59,7 +35,6 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "wc-goc-paginator": LocalJSX.WcGocPaginator & JSXBase.HTMLAttributes<HTMLWcGocPaginatorElement>;
             "wc-gocam-table": LocalJSX.WcGocamTable & JSXBase.HTMLAttributes<HTMLWcGocamTableElement>;
         }
     }

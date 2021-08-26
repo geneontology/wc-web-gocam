@@ -8,8 +8,9 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface WcGocPaginator {
         "itemCount": number;
-        "page": number;
+        "pageNumber": number;
         "pageSize": number;
+        "pageTitle": string;
         "sizeOptions": number[];
     }
 }
@@ -29,8 +30,9 @@ declare namespace LocalJSX {
         "itemCount"?: number;
         "onPageChanged"?: (event: CustomEvent<any>) => void;
         "onSizeChanged"?: (event: CustomEvent<any>) => void;
-        "page"?: number;
+        "pageNumber"?: number;
         "pageSize"?: number;
+        "pageTitle"?: string;
         "sizeOptions"?: number[];
     }
     interface IntrinsicElements {

@@ -40,23 +40,23 @@ export class CamTable {
   dataSource: GOTableDataSource<GOCamTableModel>;
 
   @State()
-  pageNumber: number;
+  pageNumber: number = 0;
 
   @State()
-  pageSize: number;
+  pageSize: number = 0;
 
   @Listen('pageChanged', { target: 'document' })
-  handleSelected(event: CustomEvent) {
+  handlePageSelected(event: CustomEvent) {
     this.pageNumber = event.detail;
     this.dataSource.getPage(this.pageNumber)
     this.updatePaginator(this.dataSource.page)
   }
 
-  @Listen('sizeChanged')
+  @Listen('sizeChanged', { target: 'document' })
   handleSizeChanged(event: CustomEvent) {
     this.pageSize = event.detail;
     this.dataSource.changeSize(this.pageSize)
-    this.dataSource.getPage(this.pageNumber)
+    this.dataSource.getPage(0)
     this.updatePaginator(this.dataSource.page)
   }
 

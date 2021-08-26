@@ -10,6 +10,25 @@
 </head>
 <body>
   GOC Paginator
-  <wc-goc-paginator page="1" page-size="10" size-options="[10, 20, 50]" item-count="1245"></wc-goc-paginator>
+  <wc-goc-paginator id="goc-paginator" page-title="Models per page" page="0" page-size="10" size-options="[10, 20, 50]"
+    item-count="1245">
+  </wc-goc-paginator>
+
+  <script>
+    var paginator = document.getElementById("goc-paginator");
+    paginator.addEventListener('pageChanged', updatePage);
+    paginator.addEventListener('sizeChanged', updateSize);
+
+    //Update the attributes
+    function updatePage(e) {
+      paginator.setAttribute('page-number', e.detail);
+    }
+
+    function updateSize(e) {
+      console.log(e)
+      paginator.setAttribute('page-size', e.detail);
+    }
+  </script>
+
 </body>
 </html>

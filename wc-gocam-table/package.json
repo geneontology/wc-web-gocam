@@ -1,6 +1,6 @@
 {
   "name": "@geneontology/wc-gocam-table",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "GOCam Table Component ",
   "private": false,
   "main": "dist/index.cjs.js",

@@ -6,7 +6,7 @@ import { Component, Event, h, EventEmitter, Prop } from '@stencil/core';
   shadow: true,
 })
 export class GOCPaginator {
-  @Prop() title = 'Items per page';
+  @Prop() pageTitle = 'Items per page';
   @Prop() pageNumber: number = 1;
   @Prop() pageSize: number = 10;
   @Prop() sizeOptions: number[] = [10, 20, 50];
@@ -55,7 +55,7 @@ export class GOCPaginator {
       return (
         <div class="paginator">
           <span class="title">
-            {this.title}
+            {this.pageTitle}
           </span>
           <span class="counts">
             {start} - {this.pageNumber === pages[pages.length - 1] ? this.itemCount : end} of {this.itemCount}

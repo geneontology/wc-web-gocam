@@ -70,7 +70,7 @@ export class GOTableDataSource<T> {
   }
 
   filterData() {
-    if (this.filter === null || this.filter === '') {
+    if (!this.filter || this.filter === '') {
       this.filteredData = this.data;
     } else {
       this.filteredData = this.data.filter(obj => this.filterPredicate(obj, this.filter));
