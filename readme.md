@@ -10,6 +10,9 @@ This is repo for GOCam browser and its related components
 | [wc-gocam-table](https://github.com/geneontology/wc-web-gocam/tree/master/wc-gocam-table)     | GO Cam Browser | [docs](https://github.com/geneontology/wc-web-gocam/blob/master/wc-gocam-table/readme.md)   | [@geneontology/wc-gocam-table](https://www.npmjs.com/package/@geneontology/wc-gocam-table)     |
 | [wc-goc-paginator](https://github.com/geneontology/wc-web-gocam/tree/master/wc-goc-paginator) | GO Cam Browser | [docs](https://github.com/geneontology/wc-web-gocam/blob/master/wc-goc-paginator/readme.md) | [@geneontology/wc-goc-paginator](https://www.npmjs.com/package/@geneontology/wc-goc-paginator) |
 
+## Demo
+
+Demo can be found [here](https://geneontology.github.io/wc-web-gocam/)
 
 ## Examples
 
