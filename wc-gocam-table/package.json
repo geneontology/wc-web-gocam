@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@geneontology/curie-util-es5": "^1.2.4",
-    "@stencil/core": "2.7.0"
+    "@stencil/core": "^2.7.0"
   },
   "devDependencies": {
     "@stencil/sass": "^1.4.1",

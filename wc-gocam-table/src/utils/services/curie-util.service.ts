@@ -37,5 +37,10 @@ export class CurieUtilService {
         return this.curie.getIri(Curie);
     }
 
+    getAmigoTerm(goterm: string): string {
+        let curieGOTerm = this.getCurie(goterm);
+        return constants.amigoTermUrl + curieGOTerm;
+    }
+
 
 }

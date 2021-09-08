@@ -5,7 +5,7 @@ import { GOCamGP } from '../models/gocam-gp';
 import { GOCamPMID } from '../models/gocam-pmid';
 
 import * as constants from './../constants';
-import * as utils from './../utils';
+//import * as utils from './../utils';
 
 export class GoApiService {
 
@@ -21,33 +21,38 @@ export class GoApiService {
     });
   }
 
-  TEMPLISTGO(): Promise<GOCamGO> {
+  TEMPLISTGO(): Promise<GOCamGO[]> {
     const url = "https://s3.amazonaws.com/geneontology-public/gocam/gocam-goterms.json"
     return fetch(url).then((response: Response) => {
       return response.json()
     });
   }
 
-  TEMPLISTGP(): Promise<Response> {
+  TEMPLISTGP(): Promise<GOCamGP[]> {
     const url = "https://s3.amazonaws.com/geneontology-public/gocam/gocam-gps.json"
     return fetch(url).then((response: Response) => {
       return response.json()
     });
   }
 
-  TEMPLISTPMID(): Promise<GOCamPMID> {
+  TEMPLISTPMID(): Promise<GOCamPMID[]> {
     const url = "https://s3.amazonaws.com/geneontology-public/gocam/gocam-pmids.json"
     return fetch(url).then((response: Response) => {
       return response.json()
     });
   }
 
+  /*
+  Don't call these for now as we are calling the static json queries
+  *
   getModelList(): Promise<GOCam[]> {
     const url = this.baseUrl + 'models'
     return fetch(url).then((response: Response) => {
       return response.json()
     });
   }
+
+
 
   getAllModelsGOs(): Promise<GOCamGO[]> {
     return fetch(this.baseUrl + 'models/go/').then((response: Response) => {
@@ -61,10 +66,7 @@ export class GoApiService {
     });
   }
 
-  /**
-   * Return meta data on PMIDs associated to a list of gocams
-   * @param gocams a list of gocams . If null, send the GO-Terms to all GO-CAMs
-   */
+ 
   getModelsPMIDs(gocams): Promise<GOCamPMID[]> {
     if (!gocams) {
       return this.getAllModelsPMIDs();
@@ -82,6 +84,7 @@ export class GoApiService {
       return response.json()
     });
   }
+  */
   /* 
     getModelListRange(start: number, size: number): Observable<GOCam[]> {
       return this.httpClient.get<[GOCam]>(this.baseUrl + "models?start=" + start + "&size=" + size)

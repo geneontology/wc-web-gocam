@@ -3,6 +3,7 @@ import { GOCam } from '../../utils/models/gocam';
 import { GOCamTableModel, GOTableDataSource, Page, TableColumn } from '../../utils/models/gocam-table';
 import { CurieUtilService } from '../../utils/services/curie-util.service';
 import { GoApiService } from '../../utils/services/go-api.service';
+import { LinkerService } from '../../utils/services/linker.service';
 import { PubmedApiService } from '../../utils/services/pubmed-api.service';
 import * as constants from './../../utils/constants'
 import * as utils from './../../utils/utils';
@@ -10,12 +11,14 @@ import * as utils from './../../utils/utils';
 @Component({
   tag: 'wc-gocam-table',
   styleUrl: 'gocam-table.scss',
+  assetsDirs: ['assets'],
   shadow: false,
 })
 export class CamTable {
   pubmedApiService = new PubmedApiService();
   curieService = new CurieUtilService();
   goApiService = new GoApiService();
+  linkerService;
 
   isLoading: boolean = true;
   isBufferLoading: boolean = true;
@@ -64,17 +67,19 @@ export class CamTable {
 
 
   componentWillLoad() {
-    this.curieService.setupCurie();
-    //const initialSize = this.pageSizes[0];
-    this.goApiService.getModelList().then((goCams: GOCam[]) => {
-      goCams.map(res => {
-        this.models.push(res);
-      })
+    this.curieService.setupCurie().then(() => {
+      //const initialSize = this.pageSizes[0];
+      this.linkerService = new LinkerService(this.curieService)
+      this.goApiService.TEMPLIST().then((gocamsRes: GOCam[]) => {
+        gocamsRes.map(res => {
+          this.models.push(res);
+        })
 
-      //const gocams = this.extractModels(goCams);
-      //gocams.length = initialSize;
-      this.fillWithGOs();
-    });
+        // const gocams = this.extractModels(gocamsRes);
+        //gocams.length = initialSize;
+        this.fillWithGOs();
+      });
+    })
   }
 
   /**
@@ -86,7 +91,7 @@ export class CamTable {
     if (gocams != null) {
       return;
     }
-    this.goApiService.getAllModelsGOs().then(json => {
+    this.goApiService.TEMPLISTGO().then(json => {
       var tabelt;
       json.forEach(element => {
         tabelt = this.models.find(item => { return item.gocam == element.gocam });
@@ -114,7 +119,7 @@ export class CamTable {
     }
 
     //    console.log("fillWithGPs(" + gocams + "): start");
-    this.goApiService.getAllModelsGPs().then(json => {
+    this.goApiService.TEMPLISTGP().then(json => {
       var tabelt;
       json.forEach(element => {
         tabelt = this.models.find(item => { return item.gocam == element.gocam });
@@ -138,7 +143,7 @@ export class CamTable {
       return null;
     }
 
-    this.goApiService.getAllModelsPMIDs().then(json => {
+    this.goApiService.TEMPLISTPMID().then(json => {
       var tabelt;
       json.forEach(element => {
         tabelt = this.models.find(item => { return item.gocam == element.gocam });
@@ -475,7 +480,7 @@ export class CamTable {
             {this.renderTermCell(row, constants.TermCategory.BP)}
             {this.renderTermCell(row, constants.TermCategory.MF)}
             {this.renderTermCell(row, constants.TermCategory.CC)}
-            {this.renderTermCell(row, constants.TermCategory.GP)}
+            {this.renderGPCell(row)}
             {this.renderContributorCell(row)}
             {this.renderGroupCell(row)}
             {this.renderDateCell(row)}
@@ -489,31 +494,26 @@ export class CamTable {
       <td class="goc-cell goc-column-title">
         <div class="row__title">
           <div class="row__title__content">
-            <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank" class="row__title__link">{row.title} &nbsp;
+            <a href={this.linkerService.getGraphView(row.gocam)} target="blank" class="row__title__link">{row.title} &nbsp;
               <coloredLine color="red" />
             </a>
             <div class="row__articles__container">
               <div class="row__articles__container__citation">Citations:</div>
               <span class="row__article"> {
-                row.pmid?.map(pmid => {
-                  pmid
+                row.pmid?.map(source => {
+
                   return [
-                    <a href="{{ urlHandler.getPubMedAbstract(pmid) }}" target="_blank">
-                      e
+                    <a href={this.linkerService.getPubMedAbstract(source.pmid)} target="_blank">
+                      {source.pmid}
                     </a>
                   ]
                 })
               }
               </span>
             </div>
-            <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank"  >
-              <span class="row__view-edit">
-                Edit
-              </span>
-            </a>
           </div>
           <div class="row__title__actions">
-            <a href="{{ urlHandler.getGraphView(row.gocam) }}" target="blank">
+            <a href={this.linkerService.getGraphView(row.gocam)} target="blank">
               <button goc-button class="button-open">
                 <span>View</span>
               </button>
@@ -537,9 +537,31 @@ export class CamTable {
           <span>{
             row[termType].map(term => {
               return [
-                <a target="_blank" class={cellClass}>
-                  {termType === constants.TermCategory.GP ?
-                    term.fullName : term.name}
+                <a href={this.linkerService.getAmigoTerm(term.id)} target="_blank" title={term.definition} class={cellClass}>
+                  {term.name}
+                </a>
+              ]
+            })
+          }
+          </span>
+        </div>
+      </td>
+    )
+  }
+
+  renderGPCell(row) {
+    if (!row.gp) {
+      return <td class="goc-cell"></td>
+    }
+
+    return (
+      <td class="goc-cell goc-column-term">
+        <div class="u-width-full">
+          <span>{
+            row.gp.map(term => {
+              return [
+                <a href={term.id} target="_blank" title={term.definition} class="table-button color-gp">
+                  {term.fullName}
                 </a>
               ]
             })
